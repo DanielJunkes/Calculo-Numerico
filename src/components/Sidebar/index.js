@@ -1,19 +1,20 @@
 import { useState } from "react";
 import "./style.css";
+import regression from "regression";
 
 export default function Sidebar() {
-  const [xValues, setXValues] = useState([0, 0, 0]);
-  const [yValues, setYValues] = useState([0, 0, 0]);
+  const [xValues, setXValues] = useState(["", "", "", ""]);
+  const [yValues, setYValues] = useState(["", "", "", ""]);
 
   const handleXChange = (index, value) => {
     const newValues = [...xValues];
-    newValues[index] = parseInt(value, 10) || 0;
+    newValues[index] = parseFloat(value) || 0;
     setXValues(newValues);
   };
 
   const handleYChange = (index, value) => {
     const newYValues = [...yValues];
-    newYValues[index] = parseInt(value, 10) || 0;
+    newYValues[index] = parseFloat(value) || 0;
     setYValues(newYValues);
   };
 
@@ -36,9 +37,17 @@ export default function Sidebar() {
     const lnX2 = lnX.map((lx) => lx * lx);
     const lnXY = lnX.map((lx, i) => lx * yValues[i]);
 
+    var pontos = [];
+    for (let i = 0; i < xValues.length; i++) {
+      pontos.push([xValues[i], yValues[i]]);
+    }
+
+    const result = regression.logarithmic(pontos, { precision: 4 });
+
     console.log("lnX:", lnX);
     console.log("lnX2:", lnX2);
     console.log("lnXY:", lnXY);
+    console.log("Resultado:", result.string);
   }
 
   // função exponencial y = b * e^ax
@@ -48,10 +57,18 @@ export default function Sidebar() {
     const xlnY = xValues.map((x, i) => x * lnY[i]);
     const x2 = xValues.map((x) => x * x);
 
+    var pontos = [];
+    for (let i = 0; i < xValues.length; i++) {
+      pontos.push([xValues[i], yValues[i]]);
+    }
+
+    const result = regression.exponential(pontos, { precision: 4 });
+
     console.log("X:", xValues);
     console.log("lnY:", lnY);
     console.log("XlnY:", xlnY);
     console.log("X2:", x2);
+    console.log("Resultado:", result.string);
   }
 
   return (
