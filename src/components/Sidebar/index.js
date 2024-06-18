@@ -4,16 +4,17 @@ import "./style.css";
 export default function Sidebar() {
   const [xValues, setXValues] = useState([0, 0, 0]);
   const [yValues, setYValues] = useState([0, 0, 0]);
+  const [selectedFunction, setSelectedFunction] = useState("logaritmica");
 
   const handleXChange = (index, value) => {
     const newValues = [...xValues];
-    newValues[index] = parseInt(value, 10) || 0;
+    newValues[index] = parseFloat(value, 10) || 0;
     setXValues(newValues);
   };
 
   const handleYChange = (index, value) => {
     const newYValues = [...yValues];
-    newYValues[index] = parseInt(value, 10) || 0;
+    newYValues[index] = parseFloat(value, 10) || 0;
     setYValues(newYValues);
   };
 
@@ -48,22 +49,31 @@ export default function Sidebar() {
     const xlnY = xValues.map((x, i) => x * lnY[i]);
     const x2 = xValues.map((x) => x * x);
 
-    console.log("X:", xValues);
     console.log("lnY:", lnY);
     console.log("XlnY:", xlnY);
     console.log("X2:", x2);
   }
 
+  const calcular = () => {
+    if (selectedFunction === "logaritmica") {
+      logaritmica();
+    } else if (selectedFunction === "exponencial") {
+      exponencial();
+    }
+  };
+
   return (
     <div className="sidebar">
-      <div className="input-table">
+      <h2 className="title">Ajuste de Curva</h2>
+
+      <div className="table">
         <div className="input-column">
-          <label>X</label>
+          <label>x</label>
           {xValues.map((value, index) => (
             <div key={index} className="input-row">
               <input
                 key={index}
-                type="number"
+                type="text"
                 value={value}
                 onChange={(e) => handleXChange(index, e.target.value)}
               />
@@ -71,12 +81,12 @@ export default function Sidebar() {
           ))}
         </div>
         <div className="input-column">
-          <label>Y</label>
+          <label>y</label>
           {yValues.map((value, index) => (
             <div key={index} className="input-row">
               <input
                 key={index}
-                type="number"
+                type="text"
                 value={value}
                 onChange={(e) => handleYChange(index, e.target.value)}
               />
@@ -85,23 +95,50 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="add-remove-buttons">
-        <button
-          className="modify-table-button minus-button"
-          onClick={removeInput}
-        >
-          -
-        </button>
+      <footer className="sidebar-footer">
+        <div className="add-remove-container">
+          <button
+            className="add-remove-button minus-button"
+            onClick={removeInput}
+          >
+            -
+          </button>
 
-        <button className="modify-table-button plus-button" onClick={addInput}>
-          +
-        </button>
-      </div>
+          <button className="add-remove-button plus-button" onClick={addInput}>
+            +
+          </button>
+        </div>
 
-      <div className="calc-buttons">
-        <button onClick={logaritmica}>Logarítmica</button>
-        <button onClick={exponencial}>Exponencial</button>
-      </div>
+        <div className="function-select">
+          <label className="radio-label">
+            <input
+              type="radio"
+              name="function"
+              value="logaritmica"
+              checked={selectedFunction === "logaritmica"}
+              onChange={(e) => setSelectedFunction(e.target.value)}
+            />
+            <span className="radio-custom"></span>
+            Logarítmica
+          </label>
+
+          <label className="radio-label">
+            <input
+              type="radio"
+              name="function"
+              value="exponencial"
+              checked={selectedFunction === "exponencial"}
+              onChange={(e) => setSelectedFunction(e.target.value)}
+            />
+            <span className="radio-custom"></span>
+            Exponencial
+          </label>
+        </div>
+
+        <div className="calc-buttons">
+          <button onClick={calcular}>Calcular</button>
+        </div>
+      </footer>
     </div>
   );
 }

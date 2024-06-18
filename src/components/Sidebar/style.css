@@ -1,44 +1,46 @@
 .sidebar {
-  width: 250px;
-  height: 100%;
-  background-color: #f0f0f0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  overflow-x: hidden;
-  padding-top: 20px;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  text-align: center;
+
+  width: 250px;
+  padding: 15px;
+  background-color: #f0f0f0;
+  overflow-x: hidden;
 }
 
-.input-table {
+.title {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.table {
   display: flex;
-  flex-direction: row;
-  width: 100%;
   gap: 10px;
-  justify-content: center;
 }
 
 .input-column {
-  width: 50%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 5px;
+
+  label {
+    font-size: 18px;
+    color: #333;
+    font-style: italic;
+  }
 
   input {
     width: 100%;
     padding: 5px;
     border: 1px solid #969696;
-    border-radius: 5px;
+    border-radius: 3px;
     font-size: 16px;
     text-align: center;
   }
 }
 
-.add-remove-buttons {
+.add-remove-container {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -46,7 +48,7 @@
   padding: 10px;
 }
 
-.modify-table-button {
+.add-remove-button {
   border: none;
   font-size: 25px;
   width: 30px;
@@ -75,23 +77,92 @@
   }
 }
 
-.sidebar .calc-buttons {
+.function-select {
+  margin-bottom: 20px;
+  display: flex;
+
+  gap: 10px;
+}
+
+.calc-buttons {
   display: flex;
   flex-direction: column;
   gap: 5px;
 
   button {
-    padding: 5px 10px;
+    padding: 5px;
     border: none;
     border-radius: 8px;
-    background-color: #969696;
+    background-color: #333;
     color: white;
     font-size: 20px;
     cursor: pointer;
     transition: 0.3s;
 
     &:hover {
-      background-color: #333;
+      background-color: #969696;
     }
   }
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  justify-content: center;
+  height: 20px;
+}
+
+.radio-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.radio-custom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #969696;
+}
+
+.radio-label:hover input ~ .radio-custom {
+  background-color: #ccc;
+}
+
+.radio-label input:checked ~ .radio-custom {
+  background-color: #2196f3;
+}
+
+.radio-custom:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.radio-label input:checked ~ .radio-custom:after {
+  display: block;
+}
+
+.radio-label .radio-custom:after {
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.sidebar-footer {
+  margin-top: auto;
 }

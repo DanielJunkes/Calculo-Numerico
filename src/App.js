@@ -1,11 +1,13 @@
 import "./App.css";
 import Sidebar from "./components/Sidebar";
+import Graph from "./components/Graph";
 
 function App() {
   return (
-    <div className="App">
+    <main className="main">
       <Sidebar />
-    </div>
+      <Graph />
+    </main>
   );
 }
 
