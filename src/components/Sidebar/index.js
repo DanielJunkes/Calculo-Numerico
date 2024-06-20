@@ -30,6 +30,39 @@ export default function Sidebar() {
     setYValues(newYValues);
   };
 
+  function verificarFuncao(){
+    var y = yValues[0];
+    if(xValues.length > 2){
+      for(let i=1; i<yValues.length; i++){
+        if(yValues[i] > y){
+            y = yValues[i];
+        }else{
+          return false;
+        }
+        return true;
+      }
+    }else{
+      return false;
+    }
+    
+  }
+
+  function tipoFuncao(){
+    if(verificarFuncao()){
+      const totalY = yValues.reduce((total, valor) => total + valor, 0);
+      const totalX = xValues.reduce((total, valor) => total + valor, 0);
+      if (totalX > totalY) {
+        console.log("Função Logarítmica");
+        logaritmica();
+      }else{
+        console.log("Função Exponencial");
+        exponencial();
+      }
+    }else{
+      console.log("Função não compatível");
+    }
+  }
+
   // função logarítmica y = a * lnx + b
   // tabela: lnx y lnx*y (lnx)^2
   function logaritmica() {
@@ -53,22 +86,22 @@ export default function Sidebar() {
   // função exponencial y = b * e^ax
   // tabela: x lny x*lny x^2
   function exponencial() {
-    const lnY = yValues.map((y) => Math.log(y));
-    const xlnY = xValues.map((x, i) => x * lnY[i]);
-    const x2 = xValues.map((x) => x * x);
+      const lnY = yValues.map((y) => Math.log(y));
+      const xlnY = xValues.map((x, i) => x * lnY[i]);
+      const x2 = xValues.map((x) => x * x);
 
-    var pontos = [];
-    for (let i = 0; i < xValues.length; i++) {
-      pontos.push([xValues[i], yValues[i]]);
-    }
+      var pontos = [];
+      for (let i = 0; i < xValues.length; i++) {
+        pontos.push([xValues[i], yValues[i]]);
+      }
 
-    const result = regression.exponential(pontos, { precision: 4 });
+      const result = regression.exponential(pontos, { precision: 4 });
 
-    console.log("X:", xValues);
-    console.log("lnY:", lnY);
-    console.log("XlnY:", xlnY);
-    console.log("X2:", x2);
-    console.log("Resultado:", result.string);
+      console.log("X:", xValues);
+      console.log("lnY:", lnY);
+      console.log("XlnY:", xlnY);
+      console.log("X2:", x2);
+      console.log("Resultado:", result.string);
   }
 
   return (
@@ -116,8 +149,8 @@ export default function Sidebar() {
       </div>
 
       <div className="calc-buttons">
-        <button onClick={logaritmica}>Logarítmica</button>
-        <button onClick={exponencial}>Exponencial</button>
+        <button onClick={tipoFuncao}>Logarítmica</button>
+        <button onClick={tipoFuncao}>Exponencial</button>
       </div>
     </div>
   );
