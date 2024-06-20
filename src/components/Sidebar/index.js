@@ -2,9 +2,24 @@ import { useState } from "react";
 import "./style.css";
 import regression from "regression";
 
-export default function Sidebar() {
-  const [xValues, setXValues] = useState(["", "", "", ""]);
-  const [yValues, setYValues] = useState(["", "", "", ""]);
+const FunctionType = {
+  0: "",
+  1: "Logarítmica",
+  2: "Exponencial",
+  3: "Não compatível",
+};
+
+export default function Sidebar({
+  xValues,
+  setXValues,
+  yValues,
+  setYValues,
+  functionType,
+  setFunctionType,
+  result,
+  setResult,
+}) {
+  const [tableData, setTableData] = useState([]);
 
   const handleXChange = (index, value) => {
     const newValues = [...xValues];
@@ -19,8 +34,8 @@ export default function Sidebar() {
   };
 
   const addInput = () => {
-    setXValues([...xValues, 0]);
-    setYValues([...yValues, 0]);
+    setXValues([...xValues, ""]);
+    setYValues([...yValues, ""]);
   };
 
   const removeInput = () => {
@@ -30,35 +45,30 @@ export default function Sidebar() {
     setYValues(newYValues);
   };
 
-  function verificarFuncao(){
+  function verificarFuncao() {
     var y = yValues[0];
-    if(xValues.length > 2){
-      for(let i=1; i<yValues.length; i++){
-        if(yValues[i] > y){
-            y = yValues[i];
-        }else{
+    if (xValues.length > 2) {
+      for (let i = 1; i < yValues.length; i++) {
+        if (yValues[i] > y) {
+          y = yValues[i];
+        } else {
           return false;
         }
         return true;
       }
-    }else{
+    } else {
       return false;
     }
-    
   }
 
-  function tipoFuncao(){
-    if(verificarFuncao()){
+  function tipoFuncao() {
+    if (verificarFuncao()) {
       const totalY = yValues.reduce((total, valor) => total + valor, 0);
       const totalX = xValues.reduce((total, valor) => total + valor, 0);
-      if (totalX > totalY) {
-        console.log("Função Logarítmica");
-        logaritmica();
-      }else{
-        console.log("Função Exponencial");
-        exponencial();
-      }
-    }else{
+
+      totalX > totalY ? logaritmica() : exponencial();
+    } else {
+      setFunctionType(FunctionType[3]);
       console.log("Função não compatível");
     }
   }
@@ -69,13 +79,36 @@ export default function Sidebar() {
     const lnX = xValues.map((x) => Math.log(x));
     const lnX2 = lnX.map((lx) => lx * lx);
     const lnXY = lnX.map((lx, i) => lx * yValues[i]);
+    setFunctionType(FunctionType[1]);
+
+    const sumLnX = lnX.reduce((total, value) => total + value, 0);
+    const sumY = yValues.reduce((total, value) => total + value, 0);
+    const sumLnXY = lnXY.reduce((total, value) => total + value, 0);
+    const sumLnX2 = lnX2.reduce((total, value) => total + value, 0);
 
     var pontos = [];
     for (let i = 0; i < xValues.length; i++) {
       pontos.push([xValues[i], yValues[i]]);
     }
 
-    const result = regression.logarithmic(pontos, { precision: 4 });
+    setResult(regression.logarithmic(pontos, { precision: 4 }).string);
+
+    const table = lnX.map((lx, i) => ({
+      lnX: lx.toFixed(4),
+      y: yValues[i],
+      lnXY: lnXY[i].toFixed(4),
+      lnX2: lnX2[i].toFixed(4),
+    }));
+
+    setTableData([
+      ...table,
+      {
+        lnX: `Σ ${sumLnX.toFixed(4)}`,
+        y: `Σ ${sumY.toFixed(4)}`,
+        lnXY: `Σ ${sumLnXY.toFixed(4)}`,
+        lnX2: `Σ ${sumLnX2.toFixed(4)}`,
+      },
+    ]);
 
     console.log("lnX:", lnX);
     console.log("lnX2:", lnX2);
@@ -86,22 +119,45 @@ export default function Sidebar() {
   // função exponencial y = b * e^ax
   // tabela: x lny x*lny x^2
   function exponencial() {
-      const lnY = yValues.map((y) => Math.log(y));
-      const xlnY = xValues.map((x, i) => x * lnY[i]);
-      const x2 = xValues.map((x) => x * x);
+    const lnY = yValues.map((y) => Math.log(y));
+    const xlnY = xValues.map((x, i) => x * lnY[i]);
+    const x2 = xValues.map((x) => x * x);
+    setFunctionType(FunctionType[2]);
 
-      var pontos = [];
-      for (let i = 0; i < xValues.length; i++) {
-        pontos.push([xValues[i], yValues[i]]);
-      }
+    const sumX = xValues.reduce((total, value) => total + value, 0);
+    const sumLnY = lnY.reduce((total, value) => total + value, 0);
+    const sumXlnY = xlnY.reduce((total, value) => total + value, 0);
+    const sumX2 = x2.reduce((total, value) => total + value, 0);
 
-      const result = regression.exponential(pontos, { precision: 4 });
+    var pontos = [];
+    for (let i = 0; i < xValues.length; i++) {
+      pontos.push([xValues[i], yValues[i]]);
+    }
 
-      console.log("X:", xValues);
-      console.log("lnY:", lnY);
-      console.log("XlnY:", xlnY);
-      console.log("X2:", x2);
-      console.log("Resultado:", result.string);
+    setResult(regression.exponential(pontos, { precision: 4 }).string);
+
+    const table = xValues.map((x, i) => ({
+      x: x.toFixed(4),
+      lnY: lnY[i].toFixed(4),
+      xlnY: xlnY[i].toFixed(4),
+      x2: x2[i].toFixed(4),
+    }));
+
+    setTableData([
+      ...table,
+      {
+        x: `Σ ${sumX.toFixed(4)}`,
+        lnY: `Σ ${sumLnY.toFixed(4)}`,
+        xlnY: `Σ ${sumXlnY.toFixed(4)}`,
+        x2: `Σ ${sumX2.toFixed(4)}`,
+      },
+    ]);
+
+    console.log("X:", xValues);
+    console.log("lnY:", lnY);
+    console.log("XlnY:", xlnY);
+    console.log("X2:", x2);
+    console.log("Resultado:", result);
   }
 
   return (
@@ -149,8 +205,61 @@ export default function Sidebar() {
       </div>
 
       <div className="calc-buttons">
-        <button onClick={tipoFuncao}>Logarítmica</button>
-        <button onClick={tipoFuncao}>Exponencial</button>
+        <button onClick={tipoFuncao}>Calcular</button>
+      </div>
+
+      <div className="result">
+        {result && (
+          <>
+            <h2>Resultado:</h2>
+            <p>{functionType}</p>
+            <p>{result}</p>
+            {functionType === FunctionType[1] && (
+              <table className="result-table">
+                <thead>
+                  <tr>
+                    <th>ln x</th>
+                    <th>y</th>
+                    <th>ln x · y</th>
+                    <th>(ln x)²</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.lnX}</td>
+                      <td>{row.y}</td>
+                      <td>{row.lnXY}</td>
+                      <td>{row.lnX2}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {functionType === FunctionType[2] && (
+              <table className="result-table">
+                <thead>
+                  <tr>
+                    <th>x</th>
+                    <th>ln y</th>
+                    <th>x · ln y</th>
+                    <th>x²</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.x}</td>
+                      <td>{row.lnY}</td>
+                      <td>{row.xlnY}</td>
+                      <td>{row.x2}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
