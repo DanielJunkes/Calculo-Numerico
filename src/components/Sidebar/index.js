@@ -46,22 +46,26 @@ export default function Sidebar({
   };
 
   function verificarFuncao() {
-    var y = yValues[0];
-    if (xValues.length > 2) {
-      for (let i = 1; i < yValues.length; i++) {
-        if (yValues[i] > y) {
-          y = yValues[i];
-        } else {
-          return false;
-        }
-        return true;
+    let crescente = true;
+    let decrescente = true;
+
+    for (let i = 1; i < yValues.length; i++) {
+      if (yValues[i] > yValues[i - 1]) {
+        decrescente = false;
+      } else if (yValues[i] < yValues[i - 1]) {
+        crescente = false;
       }
-    } else {
-      return false;
     }
+    
+    return crescente || decrescente;
   }
 
   function tipoFuncao() {
+    if (xValues.some(value => value === "") || yValues.some(value => value === "")) {
+      console.log("Valores não foram inseridos");
+      return;
+    }
+    
     if (verificarFuncao()) {
       const totalY = yValues.reduce((total, valor) => total + valor, 0);
       const totalX = xValues.reduce((total, valor) => total + valor, 0);

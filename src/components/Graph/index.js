@@ -9,7 +9,7 @@ export default function Graph({ xValues, yValues, functionType, result }) {
     const step = 50;
 
     const resizeCanvas = () => {
-      canvas.width = canvas.parentElement.clientWidth - 500;
+      canvas.width = canvas.parentElement.clientWidth - 400;
       canvas.height = canvas.parentElement.clientHeight;
 
       // Draw grid
