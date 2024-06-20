@@ -162,9 +162,11 @@ export default function Sidebar({
 
   return (
     <div className="sidebar">
+      <h2 className="title">Ajuste de Curva</h2>
+
       <div className="input-table">
         <div className="input-column">
-          <label>X</label>
+          <label>x</label>
           {xValues.map((value, index) => (
             <div key={index} className="input-row">
               <input
@@ -177,7 +179,7 @@ export default function Sidebar({
           ))}
         </div>
         <div className="input-column">
-          <label>Y</label>
+          <label>y</label>
           {yValues.map((value, index) => (
             <div key={index} className="input-row">
               <input

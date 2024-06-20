@@ -9,12 +9,14 @@
   overflow-x: hidden;
 }
 
+.title {
+  margin-bottom: 20px;
+  color: #333;
+}
+
 .input-table {
   display: flex;
-  flex-direction: row;
-  width: 100%;
   gap: 10px;
-  justify-content: center;
 }
 
 .input-column {
