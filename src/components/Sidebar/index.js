@@ -49,6 +49,7 @@ export default function Sidebar({
     let crescente = true;
     let decrescente = true;
 
+    aa
     for (let i = 1; i < yValues.length; i++) {
       if (yValues[i] > yValues[i - 1]) {
         decrescente = false;
