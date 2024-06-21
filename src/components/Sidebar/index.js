@@ -64,7 +64,9 @@ export default function Sidebar({
     if (xValues.some(value => value === "") || yValues.some(value => value === "")) {
       console.log("Valores não foram inseridos");
       return;
-    }
+    } 
+
+    if (xValues.length < 3) return
     
     if (verificarFuncao()) {
       const totalY = yValues.reduce((total, valor) => total + valor, 0);
